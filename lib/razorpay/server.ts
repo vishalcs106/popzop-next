@@ -20,6 +20,13 @@ export function getRazorpayInstance(): Razorpay {
   return razorpayInstance;
 }
 
+export function verifyWebhookSignature(body: string, signature: string): boolean {
+  const secret = process.env.RAZORPAY_WEBHOOK_SECRET;
+  if (!secret) return false;
+  const expected = crypto.createHmac('sha256', secret).update(body).digest('hex');
+  return expected === signature;
+}
+
 export function verifyPaymentSignature(params: {
   razorpayOrderId: string;
   razorpayPaymentId: string;

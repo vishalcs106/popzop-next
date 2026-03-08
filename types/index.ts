@@ -144,6 +144,21 @@ export interface Order {
   updatedAt: Timestamp | Date;
 }
 
+// ─── Subscription ────────────────────────────────────────────────────────────
+export type SubscriptionStatus = 'trial' | 'active' | 'cancelled' | 'expired';
+
+export interface Subscription {
+  id: string;
+  merchantId: string;
+  status: SubscriptionStatus;
+  trialEndsAt: Timestamp | Date;
+  currentPeriodEnd?: Timestamp | Date;
+  razorpaySubscriptionId?: string;
+  planAmount: number; // in paise
+  createdAt: Timestamp | Date;
+  updatedAt: Timestamp | Date;
+}
+
 // ─── Analytics ───────────────────────────────────────────────────────────────
 export interface AnalyticsSummary {
   totalOrders: number;

@@ -1,17 +1,17 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Merchant } from '@/types';
+import { Subscription } from '@/types';
 import { useAuth } from './useAuth';
 
-export function useMerchant() {
+export function useSubscription() {
   const { user } = useAuth();
-  const [merchant, setMerchant] = useState<Merchant | null>(null);
+  const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) {
-      setMerchant(null);
+      setSubscription(null);
       setLoading(false);
       return;
     }
@@ -20,15 +20,14 @@ export function useMerchant() {
     (async () => {
       const { doc, onSnapshot } = await import('firebase/firestore');
       const { db } = await import('@/lib/firebase/client');
-      const ref = doc(db, 'merchants', user.uid);
       unsubscribe = onSnapshot(
-        ref,
+        doc(db, 'subscriptions', user.uid),
         (snap) => {
-          setMerchant(snap.exists() ? ({ id: snap.id, ...snap.data() } as Merchant) : null);
+          setSubscription(snap.exists() ? ({ id: snap.id, ...snap.data() } as Subscription) : null);
           setLoading(false);
         },
         () => {
-          setMerchant(null);
+          setSubscription(null);
           setLoading(false);
         }
       );
@@ -37,5 +36,5 @@ export function useMerchant() {
     return () => unsubscribe?.();
   }, [user]);
 
-  return { merchant, loading };
+  return { subscription, loading };
 }

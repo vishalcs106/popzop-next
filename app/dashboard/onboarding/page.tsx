@@ -78,8 +78,7 @@ export default function OnboardingPage() {
         theme,
         bio: values.bio,
       });
-      toast.success('Your shop is live! 🎉');
-      router.replace('/dashboard/analytics');
+      router.replace('/dashboard/welcome');
     } catch (err) {
       console.error(err);
       toast.error('Failed to create shop. Please try again.');

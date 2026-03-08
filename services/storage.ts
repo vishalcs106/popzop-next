@@ -1,8 +1,4 @@
-const IS_BYPASS = process.env.NEXT_PUBLIC_DEV_BYPASS === 'true';
-
 async function uploadImage(file: File): Promise<string> {
-  if (IS_BYPASS) return URL.createObjectURL(file);
-
   const form = new FormData();
   form.append('file', file);
 
