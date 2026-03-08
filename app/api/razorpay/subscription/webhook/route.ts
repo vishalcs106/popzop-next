@@ -24,10 +24,16 @@ export async function POST(req: NextRequest) {
   const body = await req.text();
   const signature = req.headers.get('x-razorpay-signature') ?? '';
 
+  const webhookSecret = process.env.RAZORPAY_WEBHOOK_SECRET ?? '';
   console.log('[webhook] Signature present:', !!signature);
+  console.log('[webhook] Webhook secret configured:', !!webhookSecret, '| first 6 chars:', webhookSecret.slice(0, 6));
+  console.log('[webhook] Body length:', body.length);
 
   if (!verifyWebhookSignature(body, signature)) {
+    const expected = require('crypto').createHmac('sha256', webhookSecret).update(body).digest('hex');
     console.error('[webhook] Signature verification FAILED');
+    console.error('[webhook] Received signature:', signature.slice(0, 16) + '...');
+    console.error('[webhook] Expected signature:', expected.slice(0, 16) + '...');
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
